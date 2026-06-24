@@ -79,6 +79,6 @@ export const ABOUT = {
     { label: "Location", value: "Yerevan · 100% Remote" },
     { label: "Timezone", value: "UTC+4" },
     { label: "Languages", value: "EN C1 · RU C1 · HY Native" },
-    { label: "Education", value: "B.Eng — NPUA (Telecom)" },
+    { label: "Education", value: "Telecommunications Engineering — National Polytechnic University of Armenia" },
   ],
 } as const;

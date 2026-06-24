@@ -64,7 +64,7 @@ export function HeroSection() {
               height={820}
               priority
               sizes="(max-width: 1024px) 340px, 340px"
-              className="h-auto w-full object-cover"
+              className="h-auto w-full object-contain scale-125 mt-5" 
             />
             <div className="flex items-center gap-2 border-t border-[var(--border-subtle)] bg-[var(--surface-elevated)]/85 px-4 py-3 backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-metric)] animate-status-pulse" />

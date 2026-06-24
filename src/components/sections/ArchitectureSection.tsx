@@ -4,12 +4,13 @@ import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 import { Server, Activity, ShieldCheck } from "lucide-react";
 
+// Supporting principles — each grounded in CV-verifiable work.
 const PATTERNS = [
   {
     icon: Server,
     title: "Service Architectures",
     points: [
-      "Modular monoliths with strict boundaries, decomposed to microservices only where a domain needs to scale independently.",
+      "Modular services with clear boundaries, decomposed to microservices only where a domain needs to scale on its own.",
       "Event-driven workflows over RabbitMQ for async, decoupled communication.",
       "Serverless (AWS Lambda) for bursty, high-demand workloads.",
     ],
@@ -18,8 +19,8 @@ const PATTERNS = [
     icon: Activity,
     title: "Reliability & Performance",
     points: [
-      "Redis caching and PostgreSQL indexing for low-latency reads under load.",
-      "Health checks, structured logging, and metrics — observability before scale.",
+      "PostgreSQL indexing and isolation-level tuning — cut one report path from 6s to 1s.",
+      "CloudWatch metrics and structured logging for visibility before scale.",
       "Horizontal scaling and capacity planning for high-traffic paths.",
     ],
   },
@@ -27,14 +28,14 @@ const PATTERNS = [
     icon: ShieldCheck,
     title: "Security & Delivery",
     points: [
-      "AuthN/AuthZ with JWT, 2FA, and least-privilege service access.",
-      "API rate limiting and OWASP-aligned hardening on public contracts.",
-      "Dockerized CI/CD (Jenkins, AWS) with automated rollbacks.",
+      "Data privacy and tenant isolation; mitigated XSS and clickjacking in production.",
+      "Containerized AWS (ECS/EC2) deployments via GitLab CI with consistent environments.",
+      "Automated, repeatable releases that eliminated environment drift.",
     ],
   },
 ];
 
-// Lightweight box-and-arrow diagram node.
+// ── Diagram primitives ──
 function Node({
   label,
   sub,
@@ -51,10 +52,34 @@ function Node({
   } as const;
   return (
     <div
-      className={`rounded-btn border bg-[var(--surface-raised)] px-3 py-2 text-center font-mono text-xs ${tones[tone]}`}
+      className={`rounded-btn border bg-[var(--surface-raised)] px-2.5 py-2 text-center font-mono text-xs ${tones[tone]}`}
     >
       <div>{label}</div>
-      {sub && <div className="mt-0.5 text-[0.65rem] text-[var(--text-muted)]">{sub}</div>}
+      {sub && (
+        <div className="mt-0.5 text-[0.65rem] text-[var(--text-muted)]">{sub}</div>
+      )}
+    </div>
+  );
+}
+
+function Flow({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-2 py-1.5 pl-1">
+      <span className="text-[var(--border-strong)]">↓</span>
+      <span className="font-mono text-[0.65rem] uppercase tracking-wide text-[var(--text-muted)]">
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function Tier({ caption, children }: { caption: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="mb-1.5 font-mono text-[0.65rem] uppercase tracking-wide text-[var(--text-muted)]">
+        {caption}
+      </p>
+      {children}
     </div>
   );
 }
@@ -68,9 +93,9 @@ export function ArchitectureSection() {
     >
       <SectionHeading
         index="06"
-        eyebrow="Architecture Case Studies"
-        title="How I think about systems"
-        description="A representative design — the constraints, the decisions I made, the trade-offs I accepted, and what shipped."
+        eyebrow="Architecture Case Study"
+        title="A production system I designed and shipped"
+        description="Event-driven microservices I architected at BigBI for an enterprise BI platform — the real constraints, the decisions and trade-offs, and the measurable outcome."
       />
 
       {/* Featured case study */}
@@ -78,13 +103,13 @@ export function ArchitectureSection() {
         <div className="grid gap-8 lg:grid-cols-12">
           {/* Narrative */}
           <div className="space-y-6 lg:col-span-7">
-            <div>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <h3 className="font-display text-h3 font-semibold text-[var(--text-primary)]">
                 Event-driven financial-reporting pipeline
               </h3>
-              <p className="mt-1 font-mono text-xs text-[var(--text-muted)]">
-                BigBI — Senior Engineer, backend architecture
-              </p>
+              <span className="font-mono text-xs text-[var(--text-muted)]">
+                BigBI · Senior Engineer (contract)
+              </span>
             </div>
 
             <div>
@@ -92,50 +117,50 @@ export function ArchitectureSection() {
                 Context & constraints
               </p>
               <p className="mt-2 text-sm leading-[1.6] text-[var(--text-secondary)]">
-                Financial reporting needed to ingest and process 1M+ events a
-                month with accuracy and strong data isolation. Synchronous,
-                tightly-coupled services made every spike a shared failure and
-                every deploy a risk to reporting integrity.
+                An enterprise BI platform needed to ingest and process 1M+ events
+                a month with reporting accuracy and strict data isolation.
+                Tightly-coupled, synchronous services made every spike a shared
+                failure and every deploy a risk to reporting integrity.
               </p>
             </div>
 
             <div>
               <p className="font-mono text-mono-label uppercase text-[var(--color-primary-hover)]">
-                Key decisions & trade-offs
+                Decisions & trade-offs
               </p>
               <ul className="mt-2 space-y-2 text-sm leading-[1.6] text-[var(--text-secondary)]">
                 <li>
                   <span className="text-[var(--text-primary)]">
                     Decomposed into Node.js / NestJS microservices
                   </span>{" "}
-                  — accepted added network hops and operational surface in
-                  exchange for independent deploys and blast-radius isolation.
+                  — accepted more network hops and operational surface for
+                  independent deploys and contained blast radius.
                 </li>
                 <li>
                   <span className="text-[var(--text-primary)]">
-                    Moved processing onto event-driven RabbitMQ pipelines
+                    Made processing event-driven over RabbitMQ
                   </span>{" "}
-                  — chose eventual consistency over synchronous calls so a heavy
-                  job could never block ingestion or the API.
+                  — chose eventual consistency (and the extra observability it
+                  demands) so a heavy job could never block ingestion.
                 </li>
                 <li>
                   <span className="text-[var(--text-primary)]">
-                    Hardened isolation & automated containerized AWS deploys
+                    Enforced data isolation and automated AWS deploys
                   </span>{" "}
-                  — traded extra CI/CD investment for mitigated XSS/clickjacking
-                  risk and zero environment drift.
+                  — invested in CI/CD and isolation work up front to mitigate
+                  XSS/clickjacking and remove environment drift.
                 </li>
               </ul>
             </div>
 
             <div>
               <p className="font-mono text-mono-label uppercase text-[var(--color-primary-hover)]">
-                Results
+                Outcome
               </p>
               <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-xs text-[var(--color-metric)]">
                 <li>▸ 1M+ events / month processed</li>
                 <li>▸ Reporting accuracy & data isolation</li>
-                <li>▸ Reliable, automated AWS deploys</li>
+                <li>▸ Reliable, drift-free AWS deploys</li>
               </ul>
             </div>
 
@@ -150,36 +175,54 @@ export function ArchitectureSection() {
 
           {/* Diagram */}
           <div className="lg:col-span-5">
-            <div className="rounded-card border border-[var(--border-subtle)] bg-[var(--surface-base)]/60 p-5 bg-grid-mesh">
-              <p className="mb-4 font-mono text-[0.7rem] uppercase tracking-wide text-[var(--text-muted)]">
-                Request &amp; job flow
-              </p>
-              <div className="flex flex-col items-stretch gap-3">
-                <Node label="Data sources" />
-                <div className="mx-auto h-4 w-px bg-[var(--border-strong)]" />
-                <Node label="API gateway" tone="accent" sub="rate-limit · authZ" />
-                <div className="mx-auto h-4 w-px bg-[var(--border-strong)]" />
-                <div className="grid grid-cols-3 gap-2">
-                  <Node label="auth-svc" />
-                  <Node label="ingest-svc" tone="accent" />
-                  <Node label="report-api" />
-                </div>
-                <div className="mx-auto h-4 w-px bg-[var(--border-strong)]" />
-                <Node label="RabbitMQ" tone="accent" sub="event bus · 1M+/mo" />
-                <div className="mx-auto h-4 w-px bg-[var(--border-strong)]" />
+            <figure className="rounded-card border border-[var(--border-subtle)] bg-[var(--surface-base)]/60 bg-grid-mesh p-5">
+              <figcaption className="mb-4 flex items-center justify-between">
+                <span className="font-mono text-[0.7rem] uppercase tracking-wide text-[var(--text-secondary)]">
+                  Event-driven pipeline
+                </span>
+                <span className="font-mono text-[0.65rem] uppercase tracking-wide text-[var(--text-muted)]">
+                  illustrative
+                </span>
+              </figcaption>
+
+              <Tier caption="Producers · NestJS">
                 <div className="grid grid-cols-2 gap-2">
-                  <Node label="report workers" />
-                  <Node label="processors" />
+                  <Node label="ingest-svc" />
+                  <Node label="report-svc" />
                 </div>
-                <div className="mx-auto h-4 w-px bg-[var(--border-strong)]" />
-                <Node label="PostgreSQL" tone="data" sub="indexed reads" />
-              </div>
-            </div>
+              </Tier>
+
+              <Flow label="publish events" />
+
+              <Tier caption="Event bus">
+                <Node label="RabbitMQ" tone="accent" sub="1M+ events / mo" />
+              </Tier>
+
+              <Flow label="consume" />
+
+              <Tier caption="Consumers · workers">
+                <div className="grid grid-cols-3 gap-2">
+                  <Node label="worker" />
+                  <Node label="worker" />
+                  <Node label="worker" />
+                </div>
+              </Tier>
+
+              <Flow label="persist · isolated" />
+
+              <Tier caption="Storage">
+                <Node label="PostgreSQL" tone="data" sub="indexed · isolated" />
+              </Tier>
+
+              <p className="mt-4 border-t border-[var(--border-subtle)] pt-3 font-mono text-[0.65rem] uppercase tracking-wide text-[var(--text-muted)]">
+                Containerized · AWS (ECS/EC2) · automated CI/CD
+              </p>
+            </figure>
           </div>
         </div>
       </Card>
 
-      {/* Production patterns */}
+      {/* Supporting principles */}
       <div className="mt-6 grid gap-6 md:grid-cols-3">
         {PATTERNS.map((pattern) => {
           const Icon = pattern.icon;
