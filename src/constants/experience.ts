@@ -9,41 +9,41 @@ export type ExperienceItem = {
 export const EXPERIENCE: ExperienceItem[] = [
   {
     company: "Swaps.app",
-    role: "Lead Frontend Engineer",
-    period: "Sep 2023 – Present · Remote · Estonia",
+    role: "Senior Fullstack Engineer",
+    period: "Sep 2023 – Present · Estonia (Remote)",
     summary:
-      "Leading the frontend development of a production-ready crypto exchange built with Next.js and TypeScript.",
+      "Architected and scaled a multi-tenant crypto trading platform serving enterprise partners through a widget-based integration system.",
     highlights: [
-      "Architected a scalable SSR frontend with lazy loading, cutting page load time by ~45% and boosting SEO metrics by ~30%.",
-      "Implemented real-time trading via WebSockets with sub-200ms latency and expanded the platform to 7 languages, increasing adoption by ~25%.",
-      "Established testing standards (Jest, React Testing Library) with 90%+ coverage and resolved performance bottlenecks for smoother UX.",
-      "Mentored 4 engineers and coordinated cross-functional teams, improving deployment efficiency by ~20%.",
+      "Architected a multi-tenant platform integrating 40+ enterprise partners via a widget-based system built with Node.js and PostgreSQL.",
+      "Led frontend architecture of customizable partner dashboards with React, Ant Design, and Tailwind CSS, scaling onboarding across 40+ integrations.",
+      "Implemented real-time price updates over WebSockets with <200ms latency, and optimized core pages to 90+ Chrome Lighthouse scores.",
+      "Established Jest/RTL testing practices to improve coverage and resolved frontend bottlenecks to enhance UX.",
     ],
   },
   {
     company: "BigBI",
-    role: "Senior Full Stack Engineer",
-    period: "Jan 2024 – Dec 2025 · Remote · Israel",
+    role: "Senior Fullstack Developer (Contract)",
+    period: "Jan 2024 – Dec 2025 · Israel (Remote)",
     summary:
-      "Led architecture and system design for a Node.js backend within a scalable microservices ecosystem.",
+      "Designed a microservices-based data processing architecture for financial reporting with event-driven pipelines.",
     highlights: [
-      "Designed authentication, user management, and core services within a microservices architecture, enforcing clear boundaries.",
-      "Implemented database indexing and Redis-based caching strategies to optimize query performance and reduce database load.",
-      "Introduced API rate limiting and OWASP-aligned security practices for reliable, secure data contracts.",
-      "Designed event-driven workflows with RabbitMQ and containerized services with Docker, managing Jenkins CI/CD pipelines for automated builds and deployments.",
+      "Designed and implemented a microservices data-processing architecture using Node.js, NestJS, and RabbitMQ.",
+      "Built event-driven RabbitMQ pipelines processing 1M+ monthly events, critical for financial reporting accuracy.",
+      "Delivered production-ready security solutions for data privacy and isolation, mitigating XSS and clickjacking vulnerabilities.",
+      "Designed and automated containerized AWS deployments, improving CI/CD reliability and eliminating environment inconsistencies.",
     ],
   },
   {
     company: "Cretrix",
-    role: "Full Stack Developer",
+    role: "Fullstack Developer",
     period: "Aug 2022 – Sep 2023 · Armenia",
     summary:
-      "Delivered end-to-end features for a data-heavy analytics platform using React, Node.js, and AWS.",
+      "Built high-throughput report delivery pipelines and a dynamic data-visualization system.",
     highlights: [
-      "Engineered 20+ dynamic, reusable data visualization components with D3.js and refactored legacy chart architecture.",
-      "Improved export performance by ~35% and reduced deployment errors by ~40% through Dockerization and workflow automation.",
-      "Enhanced authentication flows with JWT and 2FA, integrated Stripe subscriptions, and implemented secure REST APIs.",
-      "Integrated analytics (Intercom custom events), improved access control, and added maintainable endpoint tests for higher reliability.",
+      "Designed a high-throughput report delivery pipeline with Node.js/NestJS, RabbitMQ, and AWS, automating report generation and delivery.",
+      "Containerized the app with Docker and built CI/CD via custom GitLab runners, significantly cutting development and deployment cycle times.",
+      "Optimized PostgreSQL queries and isolation levels, reducing report generation time from 6s to 1s.",
+      "Added 20+ dynamic chart types with D3.js and a client-side chart customization system, enabling redesign instead of rebuild.",
     ],
   },
   {
@@ -51,12 +51,11 @@ export const EXPERIENCE: ExperienceItem[] = [
     role: "Frontend Developer",
     period: "Feb 2020 – Aug 2022 · Armenia",
     summary:
-      "Built scalable React frontends and reusable component libraries to support multiple products.",
+      "Built and optimized React frontends, improving performance and reducing technical debt.",
     highlights: [
-      "Migrated legacy class components to functional components with hooks, Redux, and MobX.",
-      "Created reusable component libraries and custom hooks following DRY principles to support wider team development.",
-      "Streamlined API usage and state management to cut redundant requests and improve responsiveness.",
-      "Wrote unit tests for React components and helped maintain database interactions (MongoDB, MySQL) for stability.",
+      "Optimized React rendering with memoization and lazy loading, improving Lighthouse performance from 60 to 90+.",
+      "Integrated REST APIs with Redux state management and Tailwind CSS responsive design, improving UX across devices.",
+      "Migrated legacy class components to a hooks-based architecture, reducing technical debt and improving maintainability.",
     ],
   },
 ];

@@ -2,109 +2,78 @@ import Image from "next/image";
 import { PROFILE } from "@/constants/profile";
 import { SECTION_IDS } from "@/constants/navigation";
 import { Button } from "@/components/Button";
+import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Metric } from "@/components/ui/Metric";
 
 export function HeroSection() {
   return (
     <section
       aria-label="Introduction"
-      className="relative flex min-h-[80vh] items-center py-16"
+      className="relative flex min-h-[78vh] items-center py-12"
     >
-      <div className="mx-auto flex w-full max-w-6xl flex-col-reverse items-center gap-12 md:flex-row md:items-center md:justify-between md:gap-20">
-        {/* LEFT CONTENT */}
-        <div className="max-w-xl text-center md:text-left space-y-6">
-          {/* Title */}
-          <p className="text-xs uppercase tracking-[0.35em] text-[var(--color-primary)] font-semibold">
-            {PROFILE.title}
-          </p>
+      <div className="grid w-full gap-12 lg:grid-cols-12 lg:items-center lg:gap-10">
+        {/* ── Left: value proposition ── */}
+        <div className="lg:col-span-7">
+          <Eyebrow index="01">{PROFILE.title}</Eyebrow>
 
-          {/* Name */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.05]">
+          <h1 className="mt-5 font-display text-[2.75rem] font-semibold leading-[1.04] tracking-[-0.02em] text-[var(--text-primary)] sm:text-5xl md:text-display text-balance">
             {PROFILE.name}
           </h1>
 
-          {/* Tagline */}
-          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-neutral-800 dark:text-neutral-200">
+          <p className="mt-5 max-w-xl text-body-lg text-[var(--text-secondary)] text-pretty">
             {PROFILE.tagline}
-          </h2>
-
-          {/* Description */}
-          <p className="text-base md:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
-            {PROFILE.description}
           </p>
 
-          {/* Core Stack */}
-          <div className="flex flex-wrap justify-center md:justify-start gap-2 pt-2">
-            {PROFILE.coreStack.map((tech) => (
-              <span
-                key={tech}
-                className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-3 py-1 text-xs md:text-sm text-neutral-700 dark:text-neutral-300"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
+          {/* Inline stack */}
+          <p className="mt-5 font-mono text-sm text-[var(--text-muted)]">
+            {PROFILE.coreStack.join("  ·  ")}
+          </p>
 
           {/* Actions */}
-          <div className="flex flex-wrap justify-center md:justify-start gap-3 pt-4">
-            <Button
-              target="_self"
-              href="#projects"
-              variant="primary"
-              className="px-6 py-2.5 text-sm font-medium shadow-md hover:shadow-lg"
-            >
-              View Projects
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button href={`#${SECTION_IDS.projects}`} target="_self" variant="primary">
+              View Case Studies
             </Button>
-
             {PROFILE.links.resume && (
-              <Button
-                href={PROFILE.links.resume}
-                variant="outline"
-                className="px-6 py-2.5 text-sm"
-              >
+              <Button href={PROFILE.links.resume} variant="outline">
                 Download CV
               </Button>
             )}
+          </div>
 
-            {PROFILE.links.github && (
-              <Button href={PROFILE.links.github} className="px-4 py-2 text-sm">
-                GitHub
-              </Button>
-            )}
-
-            {PROFILE.links.linkedin && (
-              <Button
-                href={PROFILE.links.linkedin}
-                className="px-4 py-2 text-sm"
-              >
-                LinkedIn
-              </Button>
-            )}
+          {/* Metric strip — above the fold, the 5-second payload */}
+          <div className="mt-12 grid max-w-2xl grid-cols-2 gap-6 border-t border-[var(--border-subtle)] pt-8 sm:grid-cols-4">
+            {PROFILE.heroMetrics.map((m) => (
+              <Metric
+                key={m.label}
+                value={m.value}
+                label={m.label}
+                context={m.context}
+              />
+            ))}
           </div>
         </div>
 
-        {/* AVATAR */}
-        {PROFILE.avatar && (
-          <div className="relative flex-shrink-0">
-            <div className="relative h-52 w-52 sm:h-60 sm:w-60 md:h-72 md:w-72">
-              {/* Glow */}
-              <div className="absolute inset-0 rounded-full bg-[var(--color-primary)] blur-3xl opacity-30"></div>
-
-              {/* Border */}
-              <div className="relative h-full w-full rounded-full p-[3px] bg-[var(--color-primary)] shadow-2xl">
-                <div className="relative h-full w-full overflow-hidden rounded-full bg-white dark:bg-neutral-900">
-                  <Image
-                    src={PROFILE.avatar.src}
-                    alt={PROFILE.avatar.alt}
-                    fill
-                    sizes="(max-width: 768px) 220px, 288px"
-                    priority
-                    className="object-cover"
-                  />
-                </div>
-              </div>
+        {/* ── Right: portrait ── */}
+        <div className="lg:col-span-5">
+          <div className="relative mx-auto max-w-[340px] overflow-hidden rounded-card border border-[var(--border-subtle)] bg-[var(--surface-card)]">
+            <Image
+              src={PROFILE.avatar.src}
+              alt={PROFILE.avatar.alt}
+              width={680}
+              height={820}
+              priority
+              sizes="(max-width: 1024px) 340px, 340px"
+              className="h-auto w-full object-cover"
+            />
+            <div className="flex items-center gap-2 border-t border-[var(--border-subtle)] bg-[var(--surface-elevated)]/85 px-4 py-3 backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-metric)] animate-status-pulse" />
+              <span className="font-mono text-xs text-[var(--text-secondary)]">
+                {PROFILE.availability}
+              </span>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </section>
   );

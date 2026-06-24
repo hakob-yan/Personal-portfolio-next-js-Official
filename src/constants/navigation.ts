@@ -1,9 +1,12 @@
 export const SECTION_IDS = {
   hero: "home",
-  projects: "projects",
+  about: "about",
+  expertise: "expertise",
   skills: "skills",
+  projects: "projects",
   architecture: "architecture",
   experience: "experience",
+  testimonials: "testimonials",
   contact: "contact",
 } as const;
 
@@ -14,12 +17,12 @@ export type NavItem = {
   label: string;
 };
 
+// Curated nav — a focused subset keeps the bar scannable for recruiters.
 export const NAV_ITEMS: NavItem[] = [
-  { id: SECTION_IDS.hero, label: "Home" },
+  { id: SECTION_IDS.about, label: "About" },
+  { id: SECTION_IDS.expertise, label: "Expertise" },
   { id: SECTION_IDS.projects, label: "Projects" },
-  { id: SECTION_IDS.skills, label: "Skills" },
   { id: SECTION_IDS.architecture, label: "Architecture" },
   { id: SECTION_IDS.experience, label: "Experience" },
   { id: SECTION_IDS.contact, label: "Contact" },
 ];
-

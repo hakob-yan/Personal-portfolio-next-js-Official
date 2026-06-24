@@ -1,6 +1,27 @@
 import { SECTION_IDS } from "@/constants/navigation";
 import { PROJECTS } from "@/constants/projects";
-import { ExternalLink } from "lucide-react"; // optional icon for links
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Card } from "@/components/ui/Card";
+import { Tag } from "@/components/ui/Tag";
+import { ArrowUpRight } from "lucide-react";
+
+// Flatten the categorized tech stack into a single de-duplicated chip list.
+function flattenStack(
+  stack: Record<string, readonly string[] | undefined>,
+): string[] {
+  const seen = new Set<string>();
+  for (const values of Object.values(stack)) {
+    if (!values) continue;
+    for (const v of values) seen.add(v);
+  }
+  return Array.from(seen);
+}
+
+const ROW_LABELS = [
+  { key: "problem", label: "Problem" },
+  { key: "solution", label: "Approach" },
+  { key: "outcome", label: "Impact" },
+] as const;
 
 export function ProjectsSection() {
   return (
@@ -9,121 +30,103 @@ export function ProjectsSection() {
       className="scroll-mt-24"
       aria-label="Featured projects"
     >
-      <div className="max-w-3xl mb-12">
-        <h2 className="text-3xl md:text-4xl font-semibold mb-3">
-          Featured Projects
-        </h2>
-        <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed text-sm md:text-base">
-          Selected projects that highlight architecture, trade-offs, engineering
-          impact, and measurable results — not just UI.
-        </p>
-      </div>
+      <SectionHeading
+        index="05"
+        eyebrow="Featured Projects"
+        title="Systems shipped to production"
+        description="Each led with the outcome, then the engineering behind it — problem, approach, and measurable impact. The way I'd walk you through it in an interview."
+      />
 
-      <div className="space-y-8">
-        {PROJECTS.map((project) => (
-          <article
-            key={project.id}
-            className="group rounded-2xl border border-[var(--border-subtle)]
-              bg-[var(--surface-card)] p-6 md:p-8 transition-all duration-300
-              hover:-translate-y-1 hover:shadow-xl hover:border-[var(--color-primary)]/60"
-          >
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 md:gap-4 mb-4">
-              <div>
-                <h3 className="text-xl md:text-2xl font-semibold">{project.name}</h3>
-                <p className="text-sm md:text-base text-neutral-500 dark:text-neutral-400 mt-1">
-                  {project.oneLiner}
-                </p>
-              </div>
-
-              {project.links?.length ? (
-                <div className="flex flex-wrap gap-2 mt-2 md:mt-0">
-                  {project.links.map((link) => (
+      <div className="grid gap-6 lg:grid-cols-2">
+        {PROJECTS.map((project) => {
+          const stack = flattenStack(project.techStack);
+          const primary = project.links?.[0];
+          return (
+            <Card
+              key={project.id}
+              as="article"
+              interactive
+              className="group relative flex flex-col p-6 md:p-7"
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between gap-4">
+                <h3 className="font-display text-h3 font-semibold text-[var(--text-primary)]">
+                  {primary ? (
                     <a
-                      key={link.label + link.href}
-                      href={link.href}
+                      href={primary.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center gap-1 text-xs md:text-sm px-3 py-1 rounded-full border border-[var(--color-primary)]
-                        hover:bg-[var(--color-primary)] hover:text-white transition"
+                      className="transition-colors after:absolute after:inset-0 group-hover:text-[var(--color-primary-hover)] focus-visible:outline-none focus-visible:underline"
                     >
-                      {link.label}
-                      <ExternalLink size={14} />
+                      {project.name}
                     </a>
+                  ) : (
+                    project.name
+                  )}
+                </h3>
+                <span className="flex shrink-0 items-center gap-1.5 font-mono text-xs text-[var(--color-metric)]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-metric)]" />
+                  Production
+                </span>
+              </div>
+
+              {/* Outcome headline */}
+              <p className="mt-2 text-[var(--text-secondary)] text-pretty">
+                {project.oneLiner}
+              </p>
+
+              {/* Problem / Approach / Impact */}
+              <dl className="mt-5 space-y-3 border-t border-[var(--border-subtle)] pt-5 text-sm">
+                {ROW_LABELS.map(({ key, label }) => {
+                  const value = project[key as keyof typeof project] as string;
+                  if (!value) return null;
+                  return (
+                    <div key={key} className="grid grid-cols-[5.5rem_1fr] gap-3">
+                      <dt className="font-mono text-mono-label uppercase text-[var(--color-primary-hover)]">
+                        {label}
+                      </dt>
+                      <dd className="leading-[1.55] text-[var(--text-secondary)]">
+                        {value}
+                      </dd>
+                    </div>
+                  );
+                })}
+              </dl>
+
+              {/* Metrics */}
+              {project.metrics?.length ? (
+                <ul className="mt-5 flex flex-wrap gap-x-4 gap-y-1.5">
+                  {project.metrics.slice(0, 4).map((metric) => (
+                    <li
+                      key={metric}
+                      className="font-mono text-xs text-[var(--color-metric)]"
+                    >
+                      ▸ {metric}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+
+              {/* Stack + visit cue pinned to bottom */}
+              <div className="mt-auto pt-6">
+                <div className="flex flex-wrap gap-2">
+                  {stack.map((tech) => (
+                    <Tag key={tech}>{tech}</Tag>
                   ))}
                 </div>
-              ) : null}
-            </div>
-
-            {/* Project Details */}
-            <div className="grid gap-6 md:grid-cols-2 text-sm md:text-[0.95rem]">
-              <div className="space-y-3">
-                <p>
-                  <span className="font-medium">Context:</span> {project.context}
-                </p>
-                <p>
-                  <span className="font-medium">Problem:</span> {project.problem}
-                </p>
-                <p>
-                  <span className="font-medium">Solution:</span> {project.solution}
-                </p>
-                {project.outcome && (
-                  <p>
-                    <span className="font-medium">Outcome:</span> {project.outcome}
-                  </p>
-                )}
+                {primary ? (
+                  <span className="mt-4 inline-flex items-center gap-1 font-mono text-sm text-[var(--color-primary-hover)] transition-colors group-hover:text-[var(--color-primary)]">
+                    {primary.label}
+                    <ArrowUpRight
+                      size={14}
+                      className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    />
+                  </span>
+                ) : null}
               </div>
-
-              <div className="space-y-3">
-                <p>
-                  <span className="font-medium">Role:</span> {project.role}
-                </p>
-
-                {project.metrics?.length && (
-                  <div>
-                    <p className="font-medium mb-1">Impact & Metrics</p>
-                    <ul className="list-disc list-inside space-y-1 text-neutral-700 dark:text-neutral-300">
-                      {project.metrics.map((metric) => (
-                        <li key={metric}>{metric}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {project.challenges?.length && (
-                  <div>
-                    <p className="font-medium mb-1">Key Challenges</p>
-                    <ul className="list-disc list-inside space-y-1 text-neutral-700 dark:text-neutral-300">
-                      {project.challenges.map((challenge) => (
-                        <li key={challenge}>{challenge}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Tech Stack */}
-                <div>
-                  <p className="font-medium mb-1">Tech Stack</p>
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {Object.entries(project.techStack).map(
-                      ([category, values]) =>
-                        values && values.length > 0 && (
-                          <span
-                            key={project.id + category}
-                            className="inline-flex items-center gap-1 rounded-full bg-black/5 dark:bg-white/10 px-3 py-1 text-xs md:text-sm"
-                          >
-                            <span className="font-semibold capitalize">{category}</span>
-                            <span>·</span>
-                            <span>{values.join(", ")}</span>
-                          </span>
-                        )
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-        ))}
+            </Card>
+          );
+        })}
       </div>
     </section>
   );

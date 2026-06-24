@@ -3,10 +3,13 @@ import { useEffect, useRef } from "react";
 import canvasAnimate from "../utils/animate";
 import NavBar from "@/components/NavBar";
 import { HeroSection } from "@/components/sections/HeroSection";
-import { ProjectsSection } from "@/components/sections/ProjectsSection";
+import { AboutSection } from "@/components/sections/AboutSection";
+import { CoreExpertiseSection } from "@/components/sections/CoreExpertiseSection";
 import { SkillsSection } from "@/components/sections/SkillsSection";
+import { ProjectsSection } from "@/components/sections/ProjectsSection";
 import { ArchitectureSection } from "@/components/sections/ArchitectureSection";
 import { ExperienceSection } from "@/components/sections/ExperienceSection";
+import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { Reveal } from "@/components/Reveal";
 import { SECTION_IDS } from "@/constants/navigation";
@@ -22,15 +25,12 @@ export default function Home() {
     animate.start();
 
     const handleResize = () => {
-      // Clear the previous timeout if resizing continues
       if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
-
-      // Set a new timeout to trigger after 200ms
       resizeTimeout.current = setTimeout(() => {
         animate.end();
         animate = canvasAnimate(canvasElem.current!);
         animate.start();
-      }, 300); // adjust 200ms as needed
+      }, 300);
     };
 
     window.addEventListener("resize", handleResize);
@@ -44,30 +44,43 @@ export default function Home() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-20">
+      <header className="fixed left-0 right-0 top-0 z-20">
         <NavBar />
       </header>
 
       <main className="flex min-h-screen flex-col" id={SECTION_IDS.hero}>
-        <canvas className="fixed h-full w-full -z-10" ref={canvasElem}></canvas>
-        <div className="relative z-10 flex-1 pt-24 pb-16 px-6 md:px-20">
-          <div className="max-w-5xl mx-auto space-y-20 md:space-y-28">
+        {/* Faint canvas network — low opacity so it reads as texture, not effect */}
+        <canvas
+          className="pointer-events-none fixed h-full w-full -z-10 opacity-40"
+          ref={canvasElem}
+        />
+        <div className="relative z-10 flex-1 px-6 pb-24 pt-24 md:px-12 lg:px-16">
+          <div className="mx-auto max-w-container space-y-24 md:space-y-section">
             <Reveal>
               <HeroSection />
             </Reveal>
-            <Reveal delay={80} threshold={0.01}>
-              <ProjectsSection />
+            <Reveal>
+              <AboutSection />
             </Reveal>
-            <Reveal delay={120}>
+            <Reveal>
+              <CoreExpertiseSection />
+            </Reveal>
+            <Reveal>
               <SkillsSection />
             </Reveal>
-            <Reveal delay={160}>
+            <Reveal>
+              <ProjectsSection />
+            </Reveal>
+            <Reveal>
               <ArchitectureSection />
             </Reveal>
-            <Reveal delay={200}>
+            <Reveal>
               <ExperienceSection />
             </Reveal>
-            <Reveal delay={240}>
+            <Reveal>
+              <TestimonialsSection />
+            </Reveal>
+            <Reveal>
               <ContactSection />
             </Reveal>
           </div>

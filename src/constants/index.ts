@@ -1,9 +1,9 @@
 export const lineWidth = 1;
-export const radiusColor = "rgba(255,0,0,0.5)";
-export const lineColor = "rgba(233, 32, 79,0.3)";
-export const circleColor = lineColor;
-export const mouseColor ="rgba(0, 200, 30,0.3)";
+export const radiusColor = "rgba(59,130,196,0.25)";
+export const lineColor = "rgba(59,130,196,0.16)";
+export const circleColor = "rgba(123,139,163,0.22)";
+export const mouseColor = "rgba(91,155,217,0.30)";
 export const allowedRadius = 80;
-export const nodeSize = 5;
-export const allowedDistance = 100;
+export const nodeSize = 4;
+export const allowedDistance = 110;
 export const mouseRadius = 150;

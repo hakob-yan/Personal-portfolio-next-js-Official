@@ -1,101 +1,110 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { PROFILE } from "@/constants/profile";
-import {
-  Menu,
-  X,
-  Home,
-  Code,
-  Cpu,
-  Layers,
-  Briefcase,
-  Mail,
-} from "lucide-react";
-import { SECTION_IDS } from "@/constants/navigation";
+import { Menu, X } from "lucide-react";
+import { SECTION_IDS, NAV_ITEMS } from "@/constants/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import useNavItemActive from "@/hooks/useNavItemActive";
 import Link from "next/link";
 
-// Map section IDs to proper icons
-const ICON_MAP: Record<string, React.ElementType> = {
-  [SECTION_IDS.hero]: Home,
-  [SECTION_IDS.projects]: Code,
-  [SECTION_IDS.skills]: Cpu,
-  [SECTION_IDS.architecture]: Layers,
-  [SECTION_IDS.experience]: Briefcase,
-  [SECTION_IDS.contact]: Mail,
+const NAV_IDS = NAV_ITEMS.map((item) => item.id);
+
+// Thin scroll-progress hairline pinned to the very top edge.
+const ScrollProgress: React.FC = () => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollable =
+        document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(scrollable > 0 ? window.scrollY / scrollable : 0);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div
+      className="absolute left-0 top-0 h-px w-full origin-left bg-[var(--color-primary)]"
+      style={{ transform: `scaleX(${progress})` }}
+      aria-hidden
+    />
+  );
 };
 
-// Custom NavButton
-interface NavButtonProps {
+interface NavLinkProps {
   href: string;
   label: string;
-  icon?: React.ElementType;
-  onClick?: () => void;
   isActive?: boolean;
+  onClick?: () => void;
 }
-const NavButton: React.FC<NavButtonProps> = ({
+
+const NavLink: React.FC<NavLinkProps> = ({
   href,
   label,
-  icon: Icon,
-  onClick,
   isActive = false,
+  onClick,
 }) => (
   <a
     href={href}
     onClick={onClick}
-    className={`flex items-center gap-2 font-medium transition-colors ${isActive ? "text-[var(--color-primary)]" : "hover:text-[var(--color-primary)]"} mr-auto relative group px-2 py-1`}
+    className={`group relative px-1 py-1 text-sm font-medium transition-colors ${
+      isActive
+        ? "text-[var(--color-primary-hover)]"
+        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+    }`}
   >
-    {Icon && <Icon className="w-5 h-5 text-[var(--color-primary)]" />}
     {label}
-
-    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[var(--color-primary)] transition-all group-hover:w-full"></span>
+    <span
+      className={`absolute -bottom-0.5 left-0 h-0.5 bg-[var(--color-primary)] transition-all duration-200 ${
+        isActive ? "w-full" : "w-0 group-hover:w-full"
+      }`}
+    />
   </a>
 );
 
-// Profile Badge
 const ProfileBadge: React.FC = () => (
-  <Link href={`#${SECTION_IDS.hero}`}>
-    <div className="items-center gap-3 flex lg:hidden xl:flex">
-      <div className="flex flex-col leading-tight">
-        <span className="text-sm lg:text-base font-semibold">
-          {PROFILE.name}
-        </span>
-        <span className="text-xs lg:text-sm text-[var(--text-secondary)]">
-          {PROFILE.title}
-        </span>
-      </div>
+  <Link href={`#${SECTION_IDS.hero}`} className="flex items-center gap-3">
+    <span
+      className="grid h-9 w-9 place-items-center rounded-btn border border-[var(--border-strong)] bg-[var(--surface-raised)] font-mono text-sm font-semibold text-[var(--color-primary-hover)]"
+      aria-hidden
+    >
+      HH
+    </span>
+    <div className="hidden flex-col leading-tight sm:flex">
+      <span className="text-sm font-semibold text-[var(--text-primary)]">
+        {PROFILE.name}
+      </span>
+      <span className="font-mono text-[0.7rem] uppercase tracking-wide text-[var(--text-muted)]">
+        {PROFILE.title}
+      </span>
     </div>
   </Link>
 );
 
-// Navigation Links
 const NavLinks: React.FC<{ onClick?: () => void; isMobile?: boolean }> = ({
   onClick,
   isMobile = false,
 }) => {
-  const activeId = useNavItemActive(Object.values(SECTION_IDS));
+  const activeId = useNavItemActive(NAV_IDS);
 
   return (
     <div
       className={`flex ${
-        isMobile ? "flex-col gap-4" : "flex-row gap-6"
-      } items-center`}
+        isMobile ? "flex-col items-start gap-4" : "flex-row items-center gap-7"
+      }`}
     >
-      {Object.entries(SECTION_IDS).map(([key, id]) => {
-        const Icon = ICON_MAP[id];
-        const label = key.charAt(0).toUpperCase() + key.slice(1);
-
-        return (
-          <NavButton
-            key={id}
-            href={`#${id}`}
-            label={label}
-            icon={Icon}
-            isActive={activeId === id}
-            onClick={onClick}
-          />
-        );
-      })}
+      {NAV_ITEMS.map((item) => (
+        <NavLink
+          key={item.id}
+          href={`#${item.id}`}
+          label={item.label}
+          isActive={activeId === item.id}
+          onClick={onClick}
+        />
+      ))}
     </div>
   );
 };
@@ -103,39 +112,36 @@ const NavLinks: React.FC<{ onClick?: () => void; isMobile?: boolean }> = ({
 const NavBar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Framer Motion variants for menu
   const menuVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.25 } },
-    exit: { opacity: 0, y: -20, transition: { duration: 0.2 } },
+    hidden: { opacity: 0, y: -12 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.22 } },
+    exit: { opacity: 0, y: -12, transition: { duration: 0.18 } },
   };
 
   return (
-    <nav className="fixed w-full top-0 z-50 bg-[var(--surface-elevated)]/95 backdrop-blur-md border-b border-[var(--border-subtle)] h-20 flex items-center justify-between px-6 lg:px-20">
-      {/* Profile */}
+    <nav className="fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--surface-primary)]/80 px-6 backdrop-blur-md lg:px-12">
+      <ScrollProgress />
+
       <ProfileBadge />
 
-      {/* Desktop Navigation */}
       <div className="hidden lg:flex">
         <NavLinks />
       </div>
 
-      {/* Mobile Hamburger */}
       <div className="lg:hidden">
         <button
           aria-label="Toggle menu"
           onClick={() => setMenuOpen((prev) => !prev)}
-          className="p-2 rounded hover:bg-[var(--surface-muted)] transition"
+          className="rounded-btn p-2 text-[var(--text-secondary)] transition hover:bg-[var(--surface-raised)] hover:text-[var(--text-primary)]"
         >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
-      {/* Mobile Menu with Framer Motion */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            className="lg:hidden p-2 absolute top-20 left-4 right-4 bg-[var(--surface-elevated)] border border-[var(--border-subtle)] rounded-lg flex flex-col items-start py-4 shadow-lg"
+            className="absolute left-4 right-4 top-16 flex flex-col items-start rounded-card border border-[var(--border-subtle)] bg-[var(--surface-elevated)] p-5 shadow-card lg:hidden"
             initial="hidden"
             animate="visible"
             exit="exit"

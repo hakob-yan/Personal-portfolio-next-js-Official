@@ -7,37 +7,73 @@ html {
 }
 
 :root {
-  --text-primary: #e5e7eb;
-  --text-secondary: #9ca3af;
-  --surface-primary: #020617;
-  --surface-elevated: rgba(15, 23, 42, 0.9);
-  --surface-card: rgba(15, 23, 42, 0.85);
-  --border-subtle: rgba(148, 163, 184, 0.3);
-  --color-primary: #e9204f;
-  --color-primary-soft: rgba(233, 32, 79, 0.18);
+  /* ── Surfaces (navy / slate, dark-first) ── */
+  --surface-base: #0a0f1a; /* deepest app background */
+  --surface-primary: #0d1424; /* primary surface */
+  --surface-elevated: #111a2e; /* elevated panels / nav */
+  --surface-card: #111a2e; /* cards */
+  --surface-raised: #1a2438; /* card hover / raised */
+
+  /* ── Borders ── */
+  --border-subtle: #26324a; /* 1px hairlines */
+  --border-strong: #33415c; /* hover / active borders */
+
+  /* ── Text ── */
+  --text-primary: #e8edf5;
+  --text-secondary: #a7b2c6;
+  --text-muted: #7e8ba3;
+
+  /* ── Accent (steel blue — replaces red) ── */
+  --color-primary: #3b82c4;
+  --color-primary-hover: #5b9bd9;
+  --color-primary-pressed: #2c6699;
+  --color-primary-soft: rgba(59, 130, 196, 0.12);
+
+  /* ── Metric accent (positive numbers only) ── */
+  --color-metric: #2dd4bf;
 }
 
 body {
   color: var(--text-primary);
   background:
-    radial-gradient(circle at top left, #111827 0, transparent 45%),
-    radial-gradient(circle at bottom right, #020617 0, transparent 55%),
-    radial-gradient(circle at top right, var(--color-primary-soft) 0, transparent 50%),
-    var(--surface-primary);
+    radial-gradient(circle at top left, #111a2e 0, transparent 42%),
+    radial-gradient(circle at bottom right, #0a0f1a 0, transparent 55%),
+    radial-gradient(circle at top right, var(--color-primary-soft) 0, transparent 48%),
+    var(--surface-base);
+  font-feature-settings: "cv01", "cv03", "ss01";
+}
+
+/* Tabular numerals for all metrics / data so columns align */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  /* Faint engineering dot-mesh — replaces the particle network vibe */
+  .bg-grid-mesh {
+    background-image: radial-gradient(
+      circle,
+      var(--border-subtle) 1px,
+      transparent 1px
+    );
+    background-size: 32px 32px;
+  }
 }
 
+/* ── Scroll reveal (tuned: shorter rise, snappier easing) ── */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(12px);
   transition:
-    opacity 0.5s ease-out,
-    transform 0.5s ease-out;
+    opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-visible {
@@ -59,4 +95,33 @@ body {
 
 .animate-float-slow {
   animation: float-slow 6s ease-in-out infinite;
+}
+
+/* Subtle pulse for status dots */
+@keyframes status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+.animate-status-pulse {
+  animation: status-pulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-float-slow,
+  .animate-status-pulse {
+    animation: none;
+  }
 }

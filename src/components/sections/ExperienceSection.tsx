@@ -1,59 +1,48 @@
 import { SECTION_IDS } from "@/constants/navigation";
 import { EXPERIENCE } from "@/constants/experience";
-import { Briefcase, Calendar } from "lucide-react";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function ExperienceSection() {
   return (
     <section
       id={SECTION_IDS.experience}
       className="scroll-mt-24"
-      aria-label="Professional experience and leadership"
+      aria-label="Work experience"
     >
-      <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[var(--text-primary,#111)]">
-        Experience & Leadership
-      </h2>
-      <p className="text-sm md:text-base text-[var(--text-secondary,#666)] max-w-3xl mb-8">
-        Roles where I&apos;ve led projects end-to-end, mentored engineers, and
-        collaborated with product, design, and operations to deliver high-quality systems.
-      </p>
+      <SectionHeading
+        index="07"
+        eyebrow="Work Experience"
+        title="Where I've owned systems"
+        description="Roles where I led delivery end-to-end, set engineering standards, and shipped under real constraints."
+      />
 
-      <div className="space-y-6">
+      <ol className="relative space-y-10 border-l border-[var(--border-subtle)] pl-8">
         {EXPERIENCE.map((item) => (
-          <article
-            key={`${item.company}-${item.role}-${item.period}`}
-            className="relative rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-card)] p-6 backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[var(--color-primary)] hover:bg-[var(--surface-elevated)]"
-          >
-            {/* Header */}
-            <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
-              <div className="flex flex-col md:flex-row md:items-center gap-2">
-                <Briefcase size={20} className="text-[var(--color-primary)]" />
-                <h3 className="text-lg md:text-xl font-semibold">{item.role}</h3>
-                <span className="text-sm md:text-base text-[var(--text-secondary,#999)] md:ml-2">
-                  {item.company}
-                </span>
-              </div>
-              <div className="flex items-center gap-1 text-xs md:text-sm opacity-80">
-                <Calendar size={16} className="text-[var(--color-primary)]" />
-                <span>{item.period}</span>
-              </div>
-            </header>
+          <li key={`${item.company}-${item.role}-${item.period}`} className="relative">
+            {/* Spine node */}
+            <span className="absolute -left-[2.15rem] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-[var(--color-primary)] bg-[var(--surface-base)]" />
 
-            {/* Summary */}
-            <p className="text-sm md:text-[0.95rem] mb-3 text-[var(--text-secondary,#555)]">
+            <p className="font-mono text-xs text-[var(--text-muted)]">
+              {item.period}
+            </p>
+            <h3 className="mt-1.5 font-display text-h3 font-semibold text-[var(--text-primary)]">
+              {item.role}
+              <span className="text-[var(--color-primary-hover)]"> · {item.company}</span>
+            </h3>
+            <p className="mt-2 max-w-reading text-sm text-[var(--text-secondary)]">
               {item.summary}
             </p>
-
-            {/* Highlights */}
-            {item.highlights.length ? (
-              <ul className="list-disc list-inside space-y-1 text-sm md:text-[0.95rem] text-[var(--text-secondary,#666)]">
-                {item.highlights.map((highlight) => (
-                  <li key={highlight}>{highlight}</li>
-                ))}
-              </ul>
-            ) : null}
-          </article>
+            <ul className="mt-3 space-y-2 text-sm leading-[1.55] text-[var(--text-secondary)]">
+              {item.highlights.map((highlight) => (
+                <li key={highlight} className="flex gap-2.5">
+                  <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--color-primary)]" />
+                  {highlight}
+                </li>
+              ))}
+            </ul>
+          </li>
         ))}
-      </div>
+      </ol>
     </section>
   );
 }
