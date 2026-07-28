@@ -9,7 +9,7 @@ export const PROFILE = {
   tagline:
     "I architect and scale the systems behind FinTech, SaaS, and real-time platforms — backend-first, full-stack when it counts.",
 
-  location: "Yerevan, Armenia · 100% Remote",
+  location: "Remote",
 
   timezone: "UTC+4",
 
@@ -76,7 +76,7 @@ export const ABOUT = {
   facts: [
     { label: "Experience", value: "6+ years" },
     { label: "Focus", value: "Backend & Distributed Systems" },
-    { label: "Location", value: "Yerevan · 100% Remote" },
+    { label: "Location", value: "Remote" },
     { label: "Timezone", value: "UTC+4" },
     { label: "Languages", value: "EN C1 · RU C1 · HY Native" },
     { label: "Education", value: "Telecommunications Engineering — National Polytechnic University of Armenia" },
